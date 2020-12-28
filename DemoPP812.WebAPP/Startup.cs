@@ -26,11 +26,11 @@ namespace DemoPP812.WebAPP
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
+
             services.AddDbContext<MyDbContext>(
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnStr"),
-                    optionsBuilder => optionsBuilder.MigrationsAssembly("DemoPP812.WebApp")));
+                    optionsBuilder => optionsBuilder.MigrationsAssembly("DemoPP812.WebAPP")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -38,11 +38,13 @@ namespace DemoPP812.WebAPP
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MyDbContext>();
 
+            services.AddRazorPages();
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = true;
-                
-                
+
+
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = true;
@@ -55,11 +57,12 @@ namespace DemoPP812.WebAPP
 
                 options.User.RequireUniqueEmail = true;
                 options.User.AllowedUserNameCharacters =
-                    " abcdefghiklmnopqrtuvwxyzABCDEFGHIKLNNOPQRSTUVWXYZ-._@+";
+                    "abcdefghiklmnopqrtuvwxyzABCDEFGHIKLNNOPQRSTUVWXYZ-._@+";
 
             });
 
-            services.AddAuthorization(options => {
+            services.AddAuthorization(options =>
+            {
                 options.AddPolicy("RequireModerator",
                     policy => policy.RequireRole("Administrators", "Moderators")
                         .RequireAuthenticatedUser());
@@ -74,7 +77,7 @@ namespace DemoPP812.WebAPP
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
             });
 
-            services.AddRazorPages();
+
             services.AddControllersWithViews();
         }
 
@@ -90,9 +93,9 @@ namespace DemoPP812.WebAPP
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                //app.UseHsts();
+                app.UseHsts();
             }
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -104,10 +107,11 @@ namespace DemoPP812.WebAPP
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Students}/{action=List}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
-            using(var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<MyDbContext>();
 

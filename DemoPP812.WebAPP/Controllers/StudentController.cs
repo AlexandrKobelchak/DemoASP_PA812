@@ -5,29 +5,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using DemoASP.WebAPP.Models;
-using DomainRepositories;
-using DemoASP.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using DomainContext;
+using DemoASP.Models;
+using DemoPP812.WebAPP.Models;
 
 namespace DemoASP.WebAPP.Controllers
 {
-    public class StudentsController : Controller
+    public class StudentController : Controller
     {
-        private readonly ILogger<StudentsController> _logger;
-        private IStudentRepository _repository;
+        private readonly ILogger<StudentController> _logger;
+        private readonly MyDbContext _context;
 
-        public StudentsController(ILogger<StudentsController> logger, IStudentRepository repository)
+        public StudentController(ILogger<StudentController> logger, MyDbContext context)
         {
             _logger = logger;
-            _repository = repository;
+            _context = context;
         }
 
         public IActionResult List()
         {
-            return View(_repository
-                .AllItems
+            return View(_context
+                .Students
                 .Include(s => s.Group)
                 .ThenInclude(g => g.Faculty)
                 .Select(s => new StudentVM(s)));
@@ -36,9 +36,8 @@ namespace DemoASP.WebAPP.Controllers
         {
             if (id.HasValue)
             {
-                var stud = _repository
-                .AllItems
-                .Include(s => s.Marks)
+                var stud = _context
+                .Students                
                 .Include(s => s.Group)
                 .ThenInclude(g => g.Faculty)                
                 .FirstOrDefault(s => s.Id == id.Value);
@@ -52,10 +51,11 @@ namespace DemoASP.WebAPP.Controllers
 
         }
 
-        [Authorize(Policy = "RequireAdministrator")]
+        [Authorize(Policy = "RequireModerator")]
         public async Task<IActionResult> Add(StudentVM stud)
         {
-            await _repository.AddItemAsync(stud);
+            await _context.Students.AddAsync(stud);
+            await _context.SaveChangesAsync();
             return RedirectToAction("List");
         }
       

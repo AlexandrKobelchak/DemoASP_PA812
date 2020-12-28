@@ -1,0 +1,31 @@
+﻿@model IEnumerable<DemoASP.Models.StudentVM>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<a class="btn btn-dark" href="~/Group/ShowAddStudentForm">Add student</a>
+
+
+@foreach (var stud in Model)
+{
+
+    <div class="row mt-2">
+        <div class="col-md-1">@stud.FirstName</div>
+        <div class="col-md-1">@stud.MiddleName</div>
+        <div class="col-md-1">@stud.LastName</div>
+        <div class="col-md-2">@stud.GroupName</div>
+        <div class="col-md-2">@stud.FacultyName</div>
+        <div class="col-md-5">
+            <a class="btn btn-info" href="~/Students/Show/@stud.Id">More</a>
+            <a class="btn btn-dark" href="~/Students/Edit/@stud.Id">Edit</a>
+            <a class="btn btn-danger" href="~/Students/Delete/@stud.Id">Delete</a>
+        </div>
+        
+    </div>
+}
+

@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Entities.Group>
+@{
+    ViewData["Title"] = "ShowAddStudentForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>ShowAddStudentForm</h1>
+<form action="~/Students/Add" method="post">
+
+    <div class="form-group">
+        <input name="FirstName" type="text" placeholder="input first name here" />
+        <input name="MiddleName" type="text" placeholder="input middle name here" />
+        <input name="LastName" type="text" placeholder="input last name here" />
+        <select name="GroupId">
+            @foreach (var gr in Model)
+            {
+                <option value="@gr.Id">@gr.Name</option>
+            }
+        </select>
+        <input type="submit" />
+    </div>
+
+    
+</form>

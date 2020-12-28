@@ -1,0 +1,42 @@
+﻿@model DemoASP.Models.StudentVM
+@{
+    ViewData["Title"] = "Show";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<a class="btn btn-primary" href="~/Students/List">&lt;&lt;&lt;&nbsp;BACK</a>
+
+<h1>Info:</h1>
+<div class="row">
+    <div class="col-md-1">@Model.FirstName</div>
+    <div class="col-md-1">@Model.MiddleName</div>
+    <div class="col-md-1">@Model.LastName</div>
+    <div class="col-md-2">@Model.FacultyName</div>
+    <div class="col-md-2">@Model.GroupName</div>
+</div>
+
+@if (Model.Marks.Count > 0)
+{
+    <label>Has marks: </label>
+
+    @foreach (var mark in Model.Marks)
+    {
+        <span>@mark; </span>
+    }
+}
+else
+{
+    <label>Has not any marks</label>
+}
+
+<form action="~/Marks/Add" method="get">
+    <input type="hidden" value="@Model.Id" name="studentId" />
+    <select name="mark">
+        @for(int i=12; i>0; --i)
+        {
+            <option value="@i">@i</option>
+        }
+    </select>
+    <input type="submit" />
+</form>
+
+
